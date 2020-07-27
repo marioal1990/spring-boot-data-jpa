@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout::head"></head>
+<body>
+	<!-- HEADER TEMPLATE -->
+	<header th:replace="layout/layout::header"></header>
+	
+	<div class="container">
+		<h2 class="text-secundary border border-success" style="text-align: center;" th:text="${labelsProperties.pviewTitle}"></h2>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th scope="col" th:text="${labelsProperties.ptId}"></th>
+					<th scope="col"></th>
+					<th scope="col" th:text="${labelsProperties.ptName}"></th>
+					<th scope="col" th:text="${labelsProperties.ptPrice}"></th>
+					<th scope="col" th:text="${labelsProperties.ptStock}"></th>
+					<th scope="col" th:text="${labelsProperties.ptCreated}"></th>
+					<th scope="col" th:text="${labelsProperties.ptModified}"></th>
+					<th scope="col" th:text="${labelsProperties.actions}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="product : ${products}">
+					<td th:text="${product.id}"></td>
+					<td>
+						<div class="text-center">
+							<img class="img-thumbnail rounded float-left" 
+								th:src="@{'/uploads/' + ${product.photo}}" 
+								height="100" 
+								width="100" 
+								th:alt-title="${product.name}">
+						</div>
+					</td>
+					<td th:text="${product.name}"></td>
+					<td><span th:remove="tag" th:text="'$' + ${#numbers.formatDecimal(product.price, 3, 'POINT', 2, 'COMMA')}"></span></td>
+					<td th:text="${product.stock}"></td>
+					<td th:text="${#dates.format(product.created, 'dd/MM/yyyy HH:mm:ss')}"></td>
+					<td th:text="${#dates.format(product.modified, 'dd/MM/yyyy HH:mm:ss')}"></td>
+					<td>
+						<a class="btn btn-outline-info" th:href="@{/product/edit/} + ${product.id}">
+							<i class="fa fa-pencil-square-o"></i><span th:text="' ' + ${labelsProperties.cbEdit}"></span>
+						</a>
+						<a class="btn btn-outline-danger" th:href="@{/product/delete/} + ${product.id}" onclick="return confirm('¿Estás seguro de eliminarlo?');" >
+							<i class="fa fa-trash"></i><span th:text="' ' + ${labelsProperties.cbDelete}"></span>
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<nav th:replace="paginator-nav::paginator"></nav>
+	</div>
+
+	<!-- FOOTER TEMPLATE -->
+	<footer th:replace="layout/layout::footer"></footer>
+</body>
+</html>

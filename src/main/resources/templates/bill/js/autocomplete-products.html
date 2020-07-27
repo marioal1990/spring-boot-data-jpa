@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<script type="text/javascript" th:fragment="javascript">
+		$(document).ready(function(){
+			$("#foundProduct").autocomplete({
+				source: function(request, response){
+					$.ajax({
+						url : "/spring-boot-data-jpa/bill/products/" + request.term,
+						dataType: "json",
+						data: {
+							term: request.term
+						},
+						success: function(data){
+							response($.map(data, function(item){
+								return {
+									value: item.id,
+									label: item.name,
+									price: item.price,
+									stock: item.stock,
+									photo: item.photo,
+								};
+							}));
+						},
+					});
+				},
+				select: function(event, ui){
+					var id = ui.item.value;
+					var name = ui.item.label;
+					var price = ui.item.price;
+					var stock = ui.item.stock;
+					var photo = ui.item.photo;
+					
+					//ASK FOR EXIST PRODUCT ON ROWS, IF EXIST ADD ON EXISTED LINE
+					if (billHelper.hasExistProduct(id)){
+						billHelper.increasedQuantity(id, price);
+						return false;
+					}
+					
+					//ADD PRODUCT ON ROW
+					var templateDetailItems = $("#templateDetailItems").html();
+					templateDetailItems = templateDetailItems.replace(/{ID}/g, id);
+					templateDetailItems = templateDetailItems.replace(/{NAME}/g, name);
+					templateDetailItems = templateDetailItems.replace(/{PRICE}/g, price);
+					templateDetailItems = templateDetailItems.replace(/{STOCK}/g, stock);
+					templateDetailItems = templateDetailItems.replace(/{PHOTO}/g, photo);
+					$("#tableDetailItems tbody").append(templateDetailItems);
+					billHelper.calculateSubTotal(id, price, 1);
+					return false;
+				}
+			});
+			
+			$("form").submit(function(){
+				$("#templateDetailItems").remove();
+				return;
+			});
+		});
+		
+		var billHelper = {
+				//CALCULATE TOTAL QUANTITY FOR PRICE
+				calculateSubTotal: function(id, price, quantity){
+					var subTotal = parseInt(price) * parseInt(quantity);
+					$("#subTotal_" + id).html(subTotal);
+					//CALCULATE FINAL TOTAL
+					this.calculateTotal();
+				},
+				//HAS EXIST PRODUCT ON TABLE
+				hasExistProduct: function(id){
+					var result = false;
+					$('input[name="products[]"]').each(function(){
+						if (parseInt(id) == parseInt($(this).val())){
+							result = true;
+						}
+					});
+					return result;
+				},
+				//INCREASED QUANTITY IF EXIST PRODUCT ON TABLE
+				increasedQuantity: function(id, price){
+					var quantity = $("#quantities_" + id).val() ? 
+							parseInt($("#quantities_" + id).val()) : 0;
+					$("#quantities_" + id).val(++quantity);
+					this.calculateSubTotal(id, price, quantity);
+				},
+				//DELETE ROW PRODUCT
+				deleteRowProduct: function(id){
+					$("#row_" + id).remove();
+					//CALCULATE FINAL TOTAL
+					this.calculateTotal();
+				},
+				//CALCULATE FINAL TOTAL
+				calculateTotal: function(){
+					var total = 0;
+					$('span[id^="subTotal_"]').each(function(){
+						total += parseInt($(this).html());
+					});
+					$('#labelTotal').html(total);
+				}
+			}
+	</script>
+</body>
+</html>

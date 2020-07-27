@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+	<meta charset="UTF-8" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<link rel="styleshee" th:href="@{/css/jquery-ui.min.css}">
+	<title th:text="${labelsProperties.title}"></title>
+</head>
+<body>
+	<header th:fragment="header">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="#">Spring Boot</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse"
+					data-target="#navbarColor02" aria-controls="navbarColor02"
+					aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarColor02">
+					<ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+						<li class="nav-item active dropdown">
+							<a class="nav-link dropdown-toggle" 
+								data-toggle="dropdown" 
+								href="#" 
+								role="button" 
+								aria-haspopup="true" aria-expanded="false" th:text="${labelsProperties.mnProduct}"></a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" th:href="@{/product/view}" th:text="${labelsProperties.mnpView}"></a>
+								<a class="dropdown-item" th:href="@{/product/create}" th:text="${labelsProperties.mnpCreate}"></a>
+							</div>
+						</li>
+						<li class="nav-item active dropdown">
+							<a class="nav-link dropdown-toggle" 
+								data-toggle="dropdown" 
+								href="#" 
+								role="button" 
+								aria-haspopup="true" aria-expanded="false" th:text="${labelsProperties.mnUser}"></a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" th:href="@{/user/view}" th:text="${labelsProperties.mnuView}"></a>
+								<a class="dropdown-item" th:href="@{/user/create}" th:text="${labelsProperties.mnuCreate}"></a>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		
+		<div class="alert alert-success" th:if="${success != null}" th:text="${success}"></div>
+		<div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
+		<div class="alert alert-warning" th:if="${warning != null}" th:text="${warning}"></div>
+		<div class="alert alert-info" th:if="${info != null}" th:text="${info}"></div>
+		
+		<hr />
+	</header>
+	
+	<footer th:fragment="footer">
+		<hr />
+		<img th:src="@{/images/springBoot.jpg}" alt="Spring Banner">
+		<p>
+			Powered by <a href="https://projects.spring.io/spring-boot/">Spring
+				Boot</a> y <a href="http://www.thymeleaf.org">Thymeleaf</a>.
+		</p>
+		<p>
+			Este proyecto fue desarrollado en IDE Eclipse + Spring Plugins (STS
+			Spring Tool), Mario Araya.<br /> &copy; Company 2020,
+			Inc. Todos los derechos reservados. Términos de uso y privacidad.<br />
+		</p>
+		<!-- OTROS JS -->
+		<script th:src="@{/js/jquery-3.5.1.js}"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+		<script th:src="@{/js/moment-with-locales.js}"></script>
+		<script th:src="@{/js/jquery-ui.min.js}"></script>
+	</footer>
+</body>
+</html>
