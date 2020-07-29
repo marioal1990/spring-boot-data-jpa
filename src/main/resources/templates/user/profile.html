@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout::head"></head>
+<body>
+	<!-- HEADER TEMPLATE -->
+	<header th:replace="layout/layout::header"></header>
+	
+	<div class="container">
+		<h2 class="text-secundary border border-success" 
+			style="text-align: center;" 
+			th:text="${titleProfileUser}"></h2>
+		<hr>
+		
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" th:text="${labelsProperties.name}"></label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" th:value="${user.name} + ' ' + ${user.lastname}" readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" th:text="${labelsProperties.email}"></label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" th:value="${user.email}" readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" th:text="${labelsProperties.created}"></label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" th:value="${#dates.format(user.created, 'dd/MM/yyyy HH:mm:ss')}" readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" th:text="${labelsProperties.modified}"></label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" th:value="${#dates.format(user.modified, 'dd/MM/yyyy HH:mm:ss')}" readonly="readonly">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" th:text="${labelsProperties.photo}"></label>
+			<div class="col-sm-6" th:if="${isPhotoExist}">
+				<div class="text-center">
+				  <img class="img-thumbnail rounded float-left"
+				  	th:src="@{'/uploads/' + ${user.photo}}" 
+				  	height="200" 
+				  	width="200" 
+				  	th:alt-title="${user.name} + ' ' + ${user.lastname}">
+				</div>
+			</div>
+			<div class="col-sm-6" th:if="${!isPhotoExist}">
+				<div class="alert alert-warning" role="alert" th:text="${messageFileDoesntExist}"></div>
+			</div>
+		</div>
+		<hr>
+		<div class="container">
+			<!-- CREAR FACTURA -->
+			<a class="btn btn-outline-success" th:href="@{/bill/create/} + ${user.id}">
+				<i class="fa fa-usd"></i><span th:text="' ' + ${labelsProperties.cbBuy}"></span>
+			</a>
+			
+			<div th:if="${not #lists.isEmpty(user.bills)}">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th scope="col" th:text="${labelsProperties.btId}"></th>
+							<th scope="col" th:text="${labelsProperties.btDescription}"></th>
+							<th scope="col" th:text="${labelsProperties.btCreated}"></th>
+							<th scope="col" th:text="${labelsProperties.btProduct}"></th>
+							<th scope="col" th:text="${labelsProperties.btTotal}"></th>
+							<th scope="col" th:text="${labelsProperties.actions}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="bill : ${user.bills}">
+							<td>
+								<a class="btn btn-outline-primary" th:href="@{/bill/view/} + ${bill.id}" th:text="${bill.id}"></a>
+							</td>
+							<td th:text="${bill.description}"></td>
+							<td th:text="${#dates.format(bill.created, 'dd/MM/yyyy HH:mm:ss')}"></td>
+							<td th:text="${bill.calculateTotalProducts()}"></td>
+							<td th:text="'$' + ${#numbers.formatDecimal(bill.calculateTotal(), 3, 'POINT', 2, 'COMMA')}"></td>
+							<td>
+								<a class="btn btn-outline-info" th:href="@{/bill/edit/} + ${bill.id}">
+									<i class="fa fa-pencil-square-o"></i><span th:text="' ' + ${labelsProperties.cbEdit}"></span>
+								</a>
+								<a class="btn btn-outline-danger" th:href="@{/bill/delete/} + ${bill.id}" onclick="return confirm('¿Estás seguro de eliminarlo?');" >
+									<i class="fa fa-trash"></i><span th:text="' ' + ${labelsProperties.cbDelete}"></span>
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" align="right">
+								<h2 th:text="'Total Compras: $' + ${#numbers.formatDecimal(user.calculateTotalOfBills(), 3, 'POINT', 2, 'COMMA')}"></h2>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div th:if="${#lists.isEmpty(user.bills)}">
+				<div class="alert alert-warning" role="alert" th:text="${messageBillIsEmpty}"></div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- FOOTER TEMPLATE -->
+	<footer th:replace="layout/layout::footer"></footer>
+</body>
+</html>
