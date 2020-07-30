@@ -10,9 +10,8 @@
   
 * Para iniciar el aplicativo:
   - Para ejecutarlo tiene 2 opciones:
-     1.- Importarlo en un IDE de desarrollo y ejecutarlo.-
-     2.- Ir a la carpeta del proyecto y ejecutar el comando los 
-       Comandos: 
+     - Importarlo en un IDE de desarrollo y ejecutarlo.
+     - Ir a la carpeta del proyecto y ejecutar el comando los comandos: 
         - 'mvn spring-boot:run' o 'java -jar target/spring-boot-data-jpa-1.0.jar'
 	PD:  De ser necesario, ejecutar el comando: 'mvn clean install'
 		  
