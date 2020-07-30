@@ -18,7 +18,7 @@
 			</div>
 			<div class="card-body">
 				<h4 class="card-title">
-					<a class="btn btn-outline-primary" th:href="@{'/user/profile/' + ${bill.user.id}}" th:text="'&laquo; calcelar'"></a>
+					<a class="btn btn-outline-primary" th:href="@{'/user/profile/' + ${bill.user.id}}" th:text="'&laquo; Cancelar'"></a>
 				</h4>
 								
 				<form th:action="@{/bill/create}" th:object="${bill}" method="post">
