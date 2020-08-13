@@ -79,9 +79,9 @@
 							<td th:text="${bill.calculateTotalProducts()}"></td>
 							<td th:text="'$' + ${#numbers.formatDecimal(bill.calculateTotal(), 3, 'POINT', 2, 'COMMA')}"></td>
 							<td>
-								<a class="btn btn-outline-info" th:href="@{/bill/edit/} + ${bill.id}">
+								<!-- <a class="btn btn-outline-info" th:href="@{/bill/edit/} + ${bill.id}">
 									<i class="fa fa-pencil-square-o"></i><span th:text="' ' + ${labelsProperties.cbEdit}"></span>
-								</a>
+								</a> -->
 								<a class="btn btn-outline-danger" th:href="@{/bill/delete/} + ${bill.id}" onclick="return confirm('¿Estás seguro de eliminarlo?');" >
 									<i class="fa fa-trash"></i><span th:text="' ' + ${labelsProperties.cbDelete}"></span>
 								</a>

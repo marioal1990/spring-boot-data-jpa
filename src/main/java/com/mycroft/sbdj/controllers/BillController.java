@@ -1,7 +1,6 @@
 package com.mycroft.sbdj.controllers;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,16 +65,14 @@ public class BillController {
 		if (id > 0) {
 			Optional<Bill> optionalBill = this.services.findById(id);
 			if (!optionalBill.isPresent()) {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-						ConstantsUtil.MESSAGE_DANGER_BILL_DOESNT_EXIST);
+				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_BILL_DOESNT_EXIST);
 				return ConstantsUtil.METHOD_REDIRECT
 						.concat(ConstantsUtil.SLASH)
 						.concat(ConstantsUtil.PATH_BILL_VIEW);
 			}
 			Bill bill = optionalBill.get();
 			if (bill.getBillDetails().isEmpty()) {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-						ConstantsUtil.MESSAGE_DANGER_BILL_DETAILS_EMPTY);
+				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_BILL_DETAILS_EMPTY);
 				return ConstantsUtil.METHOD_REDIRECT
 						.concat(ConstantsUtil.SLASH)
 						.concat(ConstantsUtil.PATH_BILL_VIEW);
@@ -83,8 +80,7 @@ public class BillController {
 			model.addAttribute(ConstantsUtil.VARIABLE_NAME_BILL_DETAILS, bill.getBillDetails());
 			model.addAttribute(ConstantsUtil.VARIABLE_NAME_BILL, bill);
 		} else {
-			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-					ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
+			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
 			return ConstantsUtil.METHOD_REDIRECT
 					.concat(ConstantsUtil.SLASH)
 					.concat(ConstantsUtil.PATH_BILL_VIEW);
@@ -105,15 +101,13 @@ public class BillController {
 				model.addAttribute(ConstantsUtil.VARIABLE_NAME_PRODUCTS, products);
 				model.addAttribute(ConstantsUtil.VARIABLE_NAME_BILL, bill);
 			} else {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-						ConstantsUtil.MESSAGE_DANGER_USER_DOESNT_EXIST);
+				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_USER_DOESNT_EXIST);
 				return ConstantsUtil.METHOD_REDIRECT
 						.concat(ConstantsUtil.SLASH)
 						.concat(ConstantsUtil.PATH_BILL_VIEW);
 			}
 		} else {
-			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-					ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
+			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
 			return ConstantsUtil.METHOD_REDIRECT
 					.concat(ConstantsUtil.SLASH)
 					.concat(ConstantsUtil.PATH_BILL_VIEW);
@@ -122,16 +116,14 @@ public class BillController {
 	}
 	
 	@PostMapping(ConstantsUtil.SLASH + ConstantsUtil.PATH_BILL_CREATE)
-	public String save(Bill bill, 
+	public String create(Bill bill, 
 			@RequestParam(name = "products[]", required = false) String[] products, 
 			@RequestParam(name = "quantities[]", required = false) String[] quantities, 
 			RedirectAttributes redirect, 
 			SessionStatus status) {
-		String[] newProducts = Arrays.copyOfRange(products, 1, products.length);
-		String[] newQuantities = Arrays.copyOfRange(quantities, 1, quantities.length);
-		for (int x = 0; x < newProducts.length; x++) {
-			Long id = Long.valueOf(newProducts[x]);
-			Integer qnty = Integer.parseInt(newQuantities[x]);
+		for (int x = 0; x < products.length; x++) {
+			Long id = Long.valueOf(products[x]);
+			Integer qnty = Integer.parseInt(quantities[x]);
 			if (id > 0) {
 				Optional<Product> optionalProduct = this.productServices.findById(id);
 				if (optionalProduct.isPresent()) {
@@ -155,8 +147,7 @@ public class BillController {
 					}
 				}
 			} else {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-						ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
+				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
 				return ConstantsUtil.METHOD_REDIRECT
 						.concat(ConstantsUtil.SLASH)
 						.concat(ConstantsUtil.PATH_BILL_VIEW);
@@ -164,16 +155,39 @@ public class BillController {
 		}
 		this.services.save(bill);
 		status.setComplete();
-		redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_SUCCESS, 
-				MessageFormat.format(ConstantsUtil.MESSAGE_SUCCESS_BILL_CREATE, bill.getId()));
+		redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_SUCCESS, MessageFormat.format(ConstantsUtil.MESSAGE_SUCCESS_BILL_CREATE, bill.getId()));
 		return ConstantsUtil.METHOD_REDIRECT
 				.concat(ConstantsUtil.PATH_VIEW)
 				.concat(ConstantsUtil.SLASH)
-				.concat(bill.getUser().getId().toString());
+				.concat(bill.getId().toString());
+	}
+	
+	@GetMapping(ConstantsUtil.SLASH + ConstantsUtil.PATH_BILL_DELETE)
+	public String delete(@PathVariable(ConstantsUtil.VARIABLE_NAME_ID) Long id, 
+			RedirectAttributes redirect, Model model) {
+		User user = null;
+		if (id > 0) {
+			Optional<Bill> optionalBill = this.services.findById(id);
+			if (optionalBill.isPresent()) {
+				Bill bill = optionalBill.get();
+				user = bill.getUser();
+				this.services.delete(bill.getId());
+			} else {
+				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_BILL_DOESNT_EXIST);		
+			}
+		} else {
+			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
+		}
+		return ConstantsUtil.METHOD_REDIRECT
+				.concat(ConstantsUtil.SLASH)
+				.concat(ConstantsUtil.PATH_USER_PROFILE)
+				.concat(ConstantsUtil.SLASH)
+				.concat(user.getId().toString());
 	}
 	
 	@GetMapping(value = ConstantsUtil.PATH_BILL_PRODUCT_TERM, produces = {ConstantsUtil.APP_JSON})
 	public @ResponseBody List<Product> autoComplete(@PathVariable(ConstantsUtil.VARIABLE_NAME_TERM) String term) {
-		return this.productServices.findByName(term);
+		List<Product> list = this.productServices.findByName(term);
+		return list;
 	}
 }

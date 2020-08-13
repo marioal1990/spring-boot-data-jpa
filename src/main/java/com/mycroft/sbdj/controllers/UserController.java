@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -37,6 +38,7 @@ import com.mycroft.sbdj.services.UserRepoServices;
 import com.mycroft.sbdj.utils.ConstantsUtil;
 import com.mycroft.sbdj.utils.FileUtil;
 import com.mycroft.sbdj.utils.LabelsProperties;
+import com.mycroft.sbdj.utils.MessagesFlashUtil;
 import com.mycroft.sbdj.utils.paginator.PageRender;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +56,12 @@ public class UserController {
 	@ModelAttribute("labelsProperties")
 	public LabelsProperties getProperties() {
 		return this.labelsProperties;
+	}
+	
+	@GetMapping("/users")
+	public ResponseEntity<?> getUsers(){
+		List<User> users = this.userRepoServices.getUsers();
+		return ResponseEntity.ok(users);
 	}
 	
 	@GetMapping("/uploads/{filename:.+}")
@@ -96,7 +104,7 @@ public class UserController {
 		if (id > 0) {
 			Optional<User> optionalUser = this.userRepoServices.findById(id);
 			if (!optionalUser.isPresent()) {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_USER_DOESNT_EXIST);
+				MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_USER_DOESNT_EXIST);
 				return ConstantsUtil.METHOD_REDIRECT
 						.concat(ConstantsUtil.SLASH)
 						.concat(ConstantsUtil.PATH_USER_VIEW);
@@ -104,7 +112,7 @@ public class UserController {
 			model.addAttribute(ConstantsUtil.VARIABLE_NAME_USER, optionalUser.get());
 			return ConstantsUtil.SLASH.concat(ConstantsUtil.PATH_USER_CREATE);
 		} else {
-			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
+			MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
 			return ConstantsUtil.METHOD_REDIRECT
 					.concat(ConstantsUtil.SLASH)
 					.concat(ConstantsUtil.PATH_USER_VIEW);
@@ -117,7 +125,7 @@ public class UserController {
 		if (id > 0) {
 			Optional<User> optionalUser = this.userRepoServices.findById(id);
 			if (!optionalUser.isPresent()) {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_USER_DOESNT_EXIST);
+				MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_USER_DOESNT_EXIST);
 				return ConstantsUtil.METHOD_REDIRECT.concat(ConstantsUtil.SLASH).concat(ConstantsUtil.PATH_USER_VIEW);
 			}
 			User user = optionalUser.get();
@@ -138,7 +146,7 @@ public class UserController {
 			model.addAttribute(ConstantsUtil.VARIABLE_NAME_USER, user);
 			return ConstantsUtil.SLASH.concat(ConstantsUtil.PATH_USER_PROFILE);
 		} else {
-			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
+			MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
 			return ConstantsUtil.METHOD_REDIRECT.concat(ConstantsUtil.SLASH).concat(ConstantsUtil.PATH_USER_VIEW);
 		}
 	}
@@ -150,26 +158,24 @@ public class UserController {
 			Optional<User> optionalUser = this.userRepoServices.findById(id);
 			if (optionalUser.isPresent()) {
 				User user = optionalUser.get();
-				File filePhoto = FileUtil.getPathByName(user.getPhoto()).toFile();
-				if (filePhoto.exists() && filePhoto.canRead()) {
-					if (filePhoto.delete()) {					
-						this.userRepoServices.delete(id);
-						redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_SUCCESS, ConstantsUtil.MESSAGE_SUCCESS_USER_DELETE);
-					} else {
-						redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-								MessageFormat.format(ConstantsUtil.MESSAGE_DANGER_FILE_DOESNT_DELETE, 
-										user.getPhoto()));
-					}
-				} else {
-					redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_FILE_DOESNT_EXIST);
-				}
+				this.deleteFile(redirect, user.getPhoto());
+				this.userRepoServices.delete(id);
+				MessagesFlashUtil.messageSuccess(redirect, ConstantsUtil.MESSAGE_SUCCESS_USER_DELETE);
 			} else {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_USER_DOESNT_EXIST);			
+				MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_USER_DOESNT_EXIST);	
 			}
 		} else {
-			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
+			MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
 		}
 		return ConstantsUtil.METHOD_REDIRECT.concat(ConstantsUtil.SLASH).concat(ConstantsUtil.PATH_USER_VIEW);
+	}
+
+	private void deleteFile(RedirectAttributes redirect, String photo) {
+		File filePhoto = FileUtil.getPathByName(photo).toFile();
+		if (filePhoto.exists() && filePhoto.isFile() && filePhoto.canRead()) {
+			filePhoto.delete();
+			MessagesFlashUtil.messageSuccess(redirect, ConstantsUtil.MESSAGE_SUCCESS_PHOTO_DELETE);
+		}
 	}
 	
 	@PostMapping(ConstantsUtil.SLASH + ConstantsUtil.PATH_USER_CREATE)
@@ -184,18 +190,18 @@ public class UserController {
 			FileUtil.deleteFileIfExist(user);
 			String fileName = FileUtil.uploadFile(file);
 			if (Strings.isBlank(fileName)) {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_UPLOAD_ERROR);
+				MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_UPLOAD_ERROR);
 				return ConstantsUtil.METHOD_REDIRECT.concat(ConstantsUtil.PATH_VIEW);
 			}
 			user.setPhoto(fileName);
-			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_INFO, MessageFormat.format(ConstantsUtil.MESSAGE_INFO_UPLOAD, fileName));
+			MessagesFlashUtil.messageSuccess(redirect, MessageFormat.format(ConstantsUtil.MESSAGE_INFO_UPLOAD, fileName));
 		}
 		String message = (user.getId() != null) ? 
 				MessageFormat.format(ConstantsUtil.MESSAGE_SUCCESS_USER_EDIT, user.getName(), user.getLastname()) : 
 					MessageFormat.format(ConstantsUtil.MESSAGE_SUCCESS_USER_CREATE, user.getName(), user.getLastname());
 		this.userRepoServices.save(user);
 		status.setComplete();
-		redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_SUCCESS, message);
+		MessagesFlashUtil.messageSuccess(redirect, message);
 		return ConstantsUtil.METHOD_REDIRECT.concat(ConstantsUtil.PATH_VIEW);
 	}
 }

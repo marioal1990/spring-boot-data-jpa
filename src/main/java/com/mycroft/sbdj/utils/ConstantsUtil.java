@@ -3,14 +3,45 @@ package com.mycroft.sbdj.utils;
 public class ConstantsUtil {
 	
 	//WORDS
+	public static final String WHITE_SPACE = " ";
+	public static final String TWO_POINTS = ":";
 	public static final String SLASH = "/";
 	public static final String DOUBLE_SLASH = "//";
 	public static final String POINT = ".";
 	public static final String APP_JSON = "application/json";
 	public static final String PORCENT = "%";
+	public static final String NUMBER_CIRCLE = "N°";
+	public static final String MULTIPLY = "x";
+	public static final String MONEY = "$";
+	
+	//DOCUMENT CREATORS
+	public static final String DOC_TITLE_USER = "Datos del Usuario";
+	public static final String DOC_TITLE_BILL = "Datos de la Factura";
+	public static final String DOC_TITLE_BILL_DETAILS = "Detalle de la Factura";
+	
+	//PDF CREATORS
+	public static final String PDF_WHITE_SPACE = "             ";
+	public static final String PDF_SPACE = "===============================================================================";
+	public static final int[] PDF_TWO_WIDTH = new int[] { 5, 5 };
+	public static final int[] PDF_FOUR_WIDTH = new int[] { 1, 5, 2, 2 };
+	
+	//PATTERNS
+	public static final String PATTERN_DDMMYYYY_HHMMSS = "dd/mm/yyyy hh:mm:ss";
+	
+	//USERS
+	public static final String USERS_ADMIN = "admin";
+	public static final String USERS_USER = "user";
+	
+	//ROLES
+	public static final String ROLES_ADMIN = "ADMIN";
+	public static final String ROLES_USER = "USER";
 	
 	//METHODS
 	public static final String METHOD_REDIRECT = "redirect:";
+
+	//QUERIES
+	//*User
+	public static final String QUERY_USER_LISTS = "from User";
 	
 	//URLS
 	public static final String PATH_VIEW = "view";
@@ -26,6 +57,7 @@ public class ConstantsUtil {
 	public static final String PATH_PRODUCT_EDIT = "product/edit/{id}";
 	public static final String PATH_PRODUCT_DELETE = "product/delete/{id}";
 	public static final String PATH_BILL_VIEW = "bill/view";
+	public static final String PATH_BILL_VIEW_XLSX = "bill/view.xlsx";
 	public static final String PATH_BILL_DETAIL_VIEW = "bill/view/{id}";
 	public static final String PATH_BILL_CREATE = "bill/create";
 	public static final String PATH_BILL_CREATE_ID = "bill/create/{id}";
@@ -54,16 +86,17 @@ public class ConstantsUtil {
 	public static final String VARIABLE_IS_PHOTO_EXIST = "isPhotoExist";
 	public static final String VARIABLE_NAME_MESSAGE_FILE_DOESNT_EXIST = "messageFileDoesntExist";
 	public static final String VARIABLE_NAME_MESSAGE_BILL_IS_EMPTY = "messageBillIsEmpty";
-
-	//QUERIES
-	//*User
-	public static final String QUERY_USER_LISTS = "from User";
 	
 	//MESSAGES ALERT
+	//*Info
+	public static final String MESSAGE_INFO_UPLOAD = "Se ha subido el archivo correctamente. Nombre: {0}";
+	public static final String MESSAGE_INFO_CREATE_DIRECTORY_UPLOADS = "INFO: Creando directorio Uploads...";
+	public static final String MESSAGE_INFO_DELETE_DIRECTORY_UPLOADS = "INFO: Borrando directorio Uploads y sus archivos...";
 	//*Success
 	public static final String MESSAGE_SUCCESS_USER_CREATE = "El usuario {0} {1} ha sido creado correctamente";
 	public static final String MESSAGE_SUCCESS_USER_EDIT = "El usuario {0} {1} ha sido modificado correctamente";
 	public static final String MESSAGE_SUCCESS_USER_DELETE = "El usuario ha sido eliminado exitosamente";
+	public static final String MESSAGE_SUCCESS_PHOTO_DELETE = "La foto ha sido eliminada exitosamente";
 	public static final String MESSAGE_SUCCESS_PRODUCT_CREATE = "El producto {0} ha sido creado correctamente";
 	public static final String MESSAGE_SUCCESS_BILL_CREATE = "La factura de Folio: {0} ha sido creado correctamente";
 	public static final String MESSAGE_SUCCESS_PRODUCT_EDIT = "El producto {0} ha sido modificado correctamente";
@@ -84,11 +117,8 @@ public class ConstantsUtil {
 	public static final String MESSAGE_WARNING_FILE_TO_DELETE_EXISTING = "Advertencia: El archivo se ha encontrado en el directorio, se procederá a eliminar.";	
 	public static final String MESSAGE_WARNING_BILL_IS_EMPTY = "Advertencia: No se encontraron facturas asociadas al usuario";
 	public static final String MESSAGE_WARNING_FILE_DOESNT_EXIST = "Advertencia: No se encontró una imagen asociada al usuario";
-	//*Info
-	public static final String MESSAGE_INFO_UPLOAD = "Se ha subido el archivo correctamente. Nombre: {0}";
-	public static final String MESSAGE_INFO_CREATE_DIRECTORY_UPLOADS = "INFO: Creando directorio Uploads...";
-	public static final String MESSAGE_INFO_DELETE_DIRECTORY_UPLOADS = "INFO: Borrando directorio Uploads y sus archivos...";
 	
 	//TITLE
 	public static final String TITLE_PROFILE_USER = "Perfil de {0} {1}";
+	public static final String TITLE_VIEW = "Bienvenido a la TIENDA: {0}";
 }

@@ -76,8 +76,7 @@
 				},
 				//INCREASED QUANTITY IF EXIST PRODUCT ON TABLE
 				increasedQuantity: function(id, price){
-					var quantity = $("#quantities_" + id).val() ? 
-							parseInt($("#quantities_" + id).val()) : 0;
+					var quantity = $("#quantities_" + id).val() ? parseInt($("#quantities_" + id).val()) : 0;
 					$("#quantities_" + id).val(++quantity);
 					this.calculateSubTotal(id, price, quantity);
 				},

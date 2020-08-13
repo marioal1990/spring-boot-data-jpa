@@ -8,6 +8,13 @@
 	<div class="container">
 		<h2 class="text-secundary border border-success" style="text-align: center;" th:text="${labelsProperties.bviewTitle} + ' ' + ${labelsProperties.btId} + ' ' + ${bill.id}"></h2>
 		
+		<a class="btn btn-outline-primary" th:href="@{'/user/profile/' + ${bill.user.id}}" th:text="'&laquo; Volver'"></a>
+		<hr>
+		
+		<a class="btn btn-outline-danger btn-xs" th:href="@{'/bill/view/' + ${bill.user.id}(format=pdf)}" th:text="'PDF'"></a>
+		<a class="btn btn-outline-success btn-xs" th:href="@{'/bill/view/' + ${bill.user.id}(format=xlsx)}" th:text="'Excel'"></a>
+							
+		<hr>
 		<div class="form-row">
     		<div class="col-md-6 mb-3">
 				<label for="userNames" th:text="${labelsProperties.name}"></label>
@@ -17,7 +24,7 @@
 				<label for="userEmail" th:text="${labelsProperties.email}"></label>
 				<input type="text" class="form-control" th:value="${bill.user.email}" readonly="readonly">
     		</div>
-    	</div>	
+    	</div>
 		<hr>
 		<table width="100%" class="table table-bordered">
 			<tr>

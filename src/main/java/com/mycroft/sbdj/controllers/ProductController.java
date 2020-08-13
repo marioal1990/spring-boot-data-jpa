@@ -30,6 +30,7 @@ import com.mycroft.sbdj.services.ProductServices;
 import com.mycroft.sbdj.utils.ConstantsUtil;
 import com.mycroft.sbdj.utils.FileUtil;
 import com.mycroft.sbdj.utils.LabelsProperties;
+import com.mycroft.sbdj.utils.MessagesFlashUtil;
 import com.mycroft.sbdj.utils.paginator.PageRender;
 
 @Controller
@@ -72,8 +73,7 @@ public class ProductController {
 		if (id > 0) {
 			Optional<Product> optionalProduct = this.services.getProduct(id);
 			if (!optionalProduct.isPresent()) {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-						ConstantsUtil.MESSAGE_DANGER_PRODUCT_DOESNT_EXIST);
+				MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_PRODUCT_DOESNT_EXIST);
 				return ConstantsUtil.METHOD_REDIRECT
 						.concat(ConstantsUtil.SLASH)
 						.concat(ConstantsUtil.PATH_PRODUCT_VIEW);
@@ -81,8 +81,7 @@ public class ProductController {
 			model.addAttribute(ConstantsUtil.VARIABLE_NAME_PRODUCT, optionalProduct.get());
 			return ConstantsUtil.SLASH.concat(ConstantsUtil.PATH_PRODUCT_CREATE);
 		} else {
-			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-					ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
+			MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
 			return ConstantsUtil.METHOD_REDIRECT
 					.concat(ConstantsUtil.SLASH)
 					.concat(ConstantsUtil.PATH_PRODUCT_VIEW);
@@ -96,29 +95,26 @@ public class ProductController {
 			Optional<Product> optionalProduct = this.services.getProduct(id);
 			if (optionalProduct.isPresent()) {
 				Product product = optionalProduct.get();
-				File filePhoto = FileUtil.getPathByName(product.getPhoto()).toFile();
-				if (filePhoto.exists() && filePhoto.canRead()) {
-					if (filePhoto.delete()) {
-						this.services.delete(id);
-						redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_SUCCESS, 
-								ConstantsUtil.MESSAGE_SUCCESS_PRODUCT_DELETE);
-					} else {
-						redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-								MessageFormat.format(ConstantsUtil.MESSAGE_DANGER_FILE_DOESNT_DELETE, 
-										product.getPhoto()));
-					}
-				} else {
-					redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_FILE_DOESNT_EXIST);
-				}
+				this.deleteFile(redirect, product.getPhoto());
+				this.services.delete(id);
+				MessagesFlashUtil.messageSuccess(redirect, ConstantsUtil.MESSAGE_SUCCESS_PRODUCT_DELETE);
 			} else {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_PRODUCT_DOESNT_EXIST);		
+				MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_PRODUCT_DOESNT_EXIST);
 			}
 		} else {
-			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
+			MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_ID_DOESNT_BE_ZERO);
 		}
 		return ConstantsUtil.METHOD_REDIRECT
 				.concat(ConstantsUtil.SLASH)
 				.concat(ConstantsUtil.PATH_PRODUCT_VIEW);
+	}
+
+	private void deleteFile(RedirectAttributes redirect, String photo) {
+		File filePhoto = FileUtil.getPathByName(photo).toFile();
+		if (filePhoto.exists() && filePhoto.isFile() && filePhoto.canRead()) {
+			filePhoto.delete();
+			MessagesFlashUtil.messageSuccess(redirect, ConstantsUtil.MESSAGE_SUCCESS_PHOTO_DELETE);
+		}
 	}
 	
 	@PostMapping(ConstantsUtil.SLASH + ConstantsUtil.PATH_PRODUCT_CREATE)
@@ -135,20 +131,18 @@ public class ProductController {
 			FileUtil.deleteFileIfExist(product);
 			String fileName = FileUtil.uploadFile(file);
 			if (Strings.isBlank(fileName)) {
-				redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_ERROR, 
-						ConstantsUtil.MESSAGE_DANGER_UPLOAD_ERROR);
-				return ConstantsUtil.METHOD_REDIRECT.concat("view");
+				MessagesFlashUtil.messageError(redirect, ConstantsUtil.MESSAGE_DANGER_UPLOAD_ERROR);
+				return ConstantsUtil.METHOD_REDIRECT.concat(ConstantsUtil.PATH_VIEW);
 			}
 			product.setPhoto(fileName);
-			redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_INFO, 
-					MessageFormat.format(ConstantsUtil.MESSAGE_INFO_UPLOAD, fileName));
+			MessagesFlashUtil.messageInfo(redirect, MessageFormat.format(ConstantsUtil.MESSAGE_INFO_UPLOAD, fileName));
 		}
 		String message = (product.getId() != null) ? 
 				MessageFormat.format(ConstantsUtil.MESSAGE_SUCCESS_PRODUCT_EDIT, product.getName()) : 
 					MessageFormat.format(ConstantsUtil.MESSAGE_SUCCESS_PRODUCT_CREATE, product.getName());
 		this.services.save(product);
 		status.setComplete();
-		redirect.addFlashAttribute(ConstantsUtil.VARIABLE_NAME_SUCCESS, message);
+		MessagesFlashUtil.messageSuccess(redirect, message);
 		return ConstantsUtil.METHOD_REDIRECT.concat("view");
 	}
 }
