@@ -6,7 +6,8 @@
 			$("#foundProduct").autocomplete({
 				source: function(request, response){
 					$.ajax({
-						url : "/spring-boot-data-jpa/bill/products/" + request.term,
+						//url : "/spring-boot-data-jpa/bill/products/" + request.term,
+						url : "/bill/products/" + request.term,
 						dataType: "json",
 						data: {
 							term: request.term
