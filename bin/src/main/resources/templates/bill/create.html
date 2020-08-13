@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout::head"></head>
+<body>
+	<!-- HEADER TEMPLATE -->
+	<header th:replace="layout/layout::header"></header>
+	
+	<div class="container py-4">
+		<h2 class="text-secundary border border-success" style="text-align: center;" th:text="${messagesProperties.bcreateTitle}"></h2>
+		<div class="card bg-light">
+			<div class="card-header">
+				<table width="100%">
+					<tr>
+						<td align="left" th:text="'Complete los datos para poder realizar la compra'"></td>
+						<td align="right"><div id="divDatetimeMoment"></div></td>
+					</tr>
+				</table>
+			</div>
+			<div class="card-body">
+				<h4 class="card-title">
+					<a class="btn btn-outline-primary" th:href="@{'/user/profile/' + ${bill.user.id}}" th:text="'&laquo; calcelar'"></a>
+				</h4>
+								
+				<form th:action="@{/bill/create}" th:object="${bill}" method="post">
+					<!-- USER -->
+					<div class="form-row">
+			    		<div class="col-md-6 mb-3">
+							<label for="userNames" th:text="${messagesProperties.name}"></label>
+							<input type="text" id="userName" class="form-control" th:value="${bill.user.name} + ' ' + ${bill.user.lastname}" readonly="readonly">
+			    		</div>
+			    		<div class="col-md-6 mb-3">
+							<label for="userEmail" th:text="${messagesProperties.email}"></label>
+							<input type="text" class="form-control" th:value="${bill.user.email}" readonly="readonly">
+			    		</div>
+			    	</div>
+			    	<!-- DESCRIPTION -->
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label" th:text="${messagesProperties.btDescription}"></label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" th:field="*{description}">
+						</div>
+					</div>
+					<!-- PRODUCT -->
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label" for="foundProduct" 
+							th:text="${messagesProperties.btFoundProduct}"></label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" name="foundProduct" id="foundProduct">
+						</div>
+					</div>
+					<table th:replace="bill/template-detail-items::detailItems"></table>
+					<table id="tableDetailItems" class="table table-bordered table-striped table-hover">
+						<thead>
+							<tr>
+								<th></th>
+								<th th:text="${messagesProperties.ptName}"></th>
+								<th th:text="${messagesProperties.ptPrice}"></th>
+								<th th:text="${messagesProperties.ptStock}"></th>
+							    <th th:text="${messagesProperties.btQuantity}"></th>
+							    <th th:text="${messagesProperties.btSubTotal}"></th>
+							    <th th:text="${messagesProperties.cbDelete}"></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<table width="100%">
+						<tr>
+							<td align="right"><h4>Total: $<span id="labelTotal">0</span>,00</h4></td>
+						</tr>
+					</table>
+		
+					<button type="submit" class="btn btn-outline-success" th:text="${messagesProperties.cbSave}"></button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- FOOTER TEMPLATE -->
+	<footer th:replace="layout/layout::footer"></footer>
+	<script th:replace="bill/js/autocomplete-products::javascript"></script>
+	<script type="text/javascript">
+		var datetime = null;
+		var date = null;
+		var update = function(){
+			date = moment(new Date());
+			datetime.html(date.format('DD/MM/YYYY, hh:mm:ss a'));
+		};
+		$(document).ready(function(){
+			datetime = $("#divDatetimeMoment");
+			update();
+			setInterval(update, 1000);
+		});
+	</script>
+</body>
+</html>

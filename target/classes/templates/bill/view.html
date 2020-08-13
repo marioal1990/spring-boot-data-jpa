@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout::head"></head>
+<body>
+	<!-- HEADER TEMPLATE -->
+	<header th:replace="layout/layout::header"></header>
+	
+	<div class="container">
+		<h2 class="text-secundary border border-success" style="text-align: center;" th:text="${labelsProperties.bviewTitle} + ' ' + ${labelsProperties.btId} + ' ' + ${bill.id}"></h2>
+		
+		<a class="btn btn-outline-primary" th:href="@{'/user/profile/' + ${bill.user.id}}" th:text="'&laquo; Volver'"></a>
+		<hr>
+		
+		<a class="btn btn-outline-danger btn-xs" th:href="@{'/bill/view/' + ${bill.user.id}(format=pdf)}" th:text="'PDF'"></a>
+		<a class="btn btn-outline-success btn-xs" th:href="@{'/bill/view/' + ${bill.user.id}(format=xlsx)}" th:text="'Excel'"></a>
+							
+		<hr>
+		<div class="form-row">
+    		<div class="col-md-6 mb-3">
+				<label for="userNames" th:text="${labelsProperties.name}"></label>
+				<input type="text" id="userName" class="form-control" th:value="${bill.user.name} + ' ' + ${bill.user.lastname}" readonly="readonly">
+    		</div>
+    		<div class="col-md-6 mb-3">
+				<label for="userEmail" th:text="${labelsProperties.email}"></label>
+				<input type="text" class="form-control" th:value="${bill.user.email}" readonly="readonly">
+    		</div>
+    	</div>
+		<hr>
+		<table width="100%" class="table table-bordered">
+			<tr>
+				<td colspan="2" align="left"><h4 th:text="${labelsProperties.btId + ': ' + bill.id}"></h4></td>
+				<td colspan="2" align="right">
+					<h4 th:text="${labelsProperties.btCreated + ': ' + #dates.format(bill.created, 'dd/MM/yyyy HH:mm:ss')}"></h4>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4"><h4 th:text="${labelsProperties.btDescription + ': ' + bill.description}"></h4></td>
+			</tr>
+			<tr>
+				<td colspan="4"></td>
+			</tr>
+			<tr>
+				<td colspan="4">				
+					<table class="table table-bordered">
+					    <thead>
+					    	<tr>
+					        	<th scope="col" th:text="${labelsProperties.ptId}"></th>
+					        	<th></th>
+					        	<th scope="col" th:text="${labelsProperties.btProduct}"></th>
+					        	<th scope="col" th:text="${labelsProperties.btQuantity}"></th>
+					        	<th scope="col" th:text="${labelsProperties.btSubTotal}"></th>
+					      	</tr>
+					    </thead>
+					    <tbody>
+					      	<tr th:each="billDetail : ${billDetails}">
+						        <td th:text="${billDetail.product.id}"></td>
+						        <td>
+							        <div class="text-center">
+										<img class="img-thumbnail rounded float-left" 
+											th:src="@{'/uploads/' + ${billDetail.product.photo}}" 
+											height="50" 
+											width="50" 
+											th:alt-title="${billDetail.product.name}">
+									</div>
+						        </td>
+						        <td th:text="${billDetail.product.name}"></td>
+						        <td th:text="${billDetail.quantity} + ' X $' + ${#numbers.formatDecimal(billDetail.product.price, 3, 'POINT', 2, 'COMMA')}"></td>
+						        <td th:text="'$' + ${#numbers.formatDecimal(billDetail.calculateSubTotal(), 3, 'POINT', 2, 'COMMA')}"></td>
+					      	</tr>
+					    </tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4" align="right">
+					<h4 th:text="${labelsProperties.btTotal} + ': $' + ${#numbers.formatDecimal(bill.calculateTotal(), 3, 'POINT', 2, 'COMMA')}"></h4>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<!-- FOOTER TEMPLATE -->
+	<footer th:replace="layout/layout::footer"></footer>
+</body>
+</html>

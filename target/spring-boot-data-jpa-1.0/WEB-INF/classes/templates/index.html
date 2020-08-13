@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout::head"></head>
+<body>
+	<!-- HEADER TEMPLATE -->
+	<header th:replace="layout/layout::header"></header>
+	
+	<div class="container">
+		<h2 class="text-secundary border border-success" style="text-align: center;" th:text="${index.title}"></h2>
+	</div>
+	
+	<!-- FOOTER TEMPLATE -->
+	<footer th:replace="layout/layout::footer"></footer>
+</body>
+</html>

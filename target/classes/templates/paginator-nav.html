@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<nav th:fragment="paginator">
+		<ul class="pagination">
+		  	<!-- PRIMERA -->
+		    <li class="page-item" th:class="${page.first?'page-item disabled':'page-item'}">
+		    	<span class="page-link" th:if="${page.first}" th:text="${labelsProperties.pFirst}"></span>
+		    	<a class="page-link" 
+		    		th:if="${not page.first}" 
+		    		th:href="@{${page.url}(page = 0)}" 
+		    		th:text="${labelsProperties.pFirst}"></a>
+		    </li>
+		  	<!-- ANTERIOR -->
+		    <li class="page-item" th:class="${not page.hasPrevious?'page-item disabled':'page-item'}">
+		    	<span class="page-link" th:if="${not page.hasPrevious}" th:text="${labelsProperties.pPrevious}"></span>
+		    	<a class="page-link" 
+		    		th:if="${page.hasPrevious}" 
+		    		th:href="@{${page.url}(page = ${page.currentPage-2})}" 
+		    		th:text="${labelsProperties.pPrevious}"></a>
+		    </li>
+		  	
+		  	<!-- ITEMS -->
+		    <li class="page-item" th:each="item:${page.pages}" th:class="${item.isCurrentPage?'page-item active':'page-item'}">
+		    	<span class="page-link" th:if="${item.isCurrentPage}" th:text="${item.numberPage}"></span>
+		    	<a class="page-link" 
+		    		th:if="${not item.isCurrentPage}" 
+		    		th:href="@{${page.url}(page = ${item.numberPage-1})}" 
+		    		th:text="${item.numberPage}"></a>
+		  	</li>
+		  	
+		  	<!-- SIGUIENTE -->
+		    <li class="page-item" th:class="${not page.hasNext?'page-item disabled':'page-item'}">
+		    	<span class="page-link" th:if="${not page.hasNext}" th:text="${labelsProperties.pNext}"></span>
+		    	<a class="page-link" 
+		    		th:if="${page.hasNext}" 
+		    		th:href="@{${page.url}(page = ${page.currentPage})}" 
+		    		th:text="${labelsProperties.pNext}"></a>
+   			</li>
+		  	<!-- ULTIMA -->
+		    <li class="page-item" th:class="${page.last?'page-item disabled':'page-item'}">
+		    	<span class="page-link" th:if="${page.last}" th:text="${labelsProperties.pLast}"></span>
+		    	<a class="page-link" 
+		    		th:if="${not page.last}" 
+		    		th:href="@{${page.url}(page = ${page.totalPages-1})}" 
+		    		th:text="${labelsProperties.pLast}"></a>
+		    </li>
+		</ul>
+	</nav>
+</body>
+</html>
