@@ -17,7 +17,7 @@
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="collapse navbar-collapse" id="navbarColor02">
-					<ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+					<ul class="navbar-nav mr-auto">
 						<li class="nav-item active dropdown">
 							<a class="nav-link dropdown-toggle" 
 								data-toggle="dropdown" 
@@ -40,6 +40,10 @@
 								<a class="dropdown-item" th:href="@{/user/create}" th:text="${labelsProperties.mnuCreate}"></a>
 							</div>
 						</li>
+					</ul>
+					<ul class="navbar-nav navbar-right mx-4">
+						<li class="nav-item mx-1"><a class="btn btn-outline-success" href="?lang=es_ES">ES</a></li>
+						<li class="nav-item mx-1"><a class="btn btn-outline-danger" href="?lang=en_EN">EN</a></li>
 					</ul>
 				</div>
 			</div>

@@ -42,6 +42,12 @@ public class FileUtil {
 		return pathPhoto;
 	}
 	
+	public static String getPathByNameString(String fileName) {
+		String pathPhoto = Paths.get(ConstantsUtil.VARIABLE_NAME_FILES_FOLDER)
+				.resolve(fileName).toAbsolutePath().toString();
+		return pathPhoto;
+	}
+	
 	public static void deleteFileIfExist(User user) {
 		if (user.getId() != null 
 				&& user.getId() > 0 

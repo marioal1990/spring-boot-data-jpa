@@ -1,6 +1,6 @@
 /* Populate tables */
 INSERT INTO users(name, lastname, email, created, modified, photo) VALUES ('Chuck', 'Norris', 'chucknorris@gmail.com', now(), now(), '');
-INSERT INTO users(name, lastname, email, created, modified, photo) VALUES ('Juanito', 'Perez', 'juanit.perez@gmail.com', now(), now(), '');
+INSERT INTO users(name, lastname, email, created, modified, photo) VALUES ('Juanito', 'Perez', 'juanito.perez@gmail.com', now(), now(), '');
 
 INSERT INTO products(name, price, stock, created, photo) VALUES ('Audifonos HP', 18990, 45, now(), 'audifonos.png');
 INSERT INTO products(name, price, stock, created, photo) VALUES ('Mouse Gamer Redragon', 14990, 50, now(), 'mouse.jpg');
